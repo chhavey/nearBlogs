@@ -1,44 +1,51 @@
-// // src/App.js
-// import React from "react";
-// import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-// import Home from "./pages/Home";
-// import Navbar from "./components/Navbar"; // Assuming you have a Navbar component
-
-// const App = () => {
-//   return (
-//     <Router>
-//       <Navbar /> {/* Include Navbar on all pages */}
-//       <Routes>
-//         <Route path="/" element={<Home />} />
-//         {/* Add other routes for Create, My Blogs, Payment, etc. */}
-//       </Routes>
-//     </Router>
-//   );
-// };
-
-// export default App;
-// src/App.js
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Logout from "./components/Logout";
+import Modal from "./components/Modal";
+import { Navigate } from "react-router-dom";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // Adjust as needed
-  const [searchWord, setSearchWord] = useState(""); // State for the search term
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchWord, setSearchWord] = useState("");
 
-  // Handle search term input
+  const handleAuthenticate = (user) => {
+    setIsLoggedIn(true);
+    localStorage.setItem("user", JSON.stringify(user));
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem("user");
+  };
+
   const handleSearch = (searchTerm) => {
-    setSearchWord(searchTerm); // Update the searchWord state
+    setSearchWord(searchTerm);
   };
 
   return (
     <Router>
-      <Navbar isLoggedIn={isLoggedIn} handleSearch={handleSearch} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        onOpenModal={() => setIsModalOpen(true)}
+        handleSearch={handleSearch}
+      />
       <Routes>
         <Route path="/" element={<Home searchWord={searchWord} />} />
-        {/* Add other routes for Create, My Blogs, Payment, etc. */}
+        {isLoggedIn ? (
+          <Route path="*" element={<Navigate to="/" replace />} />
+        ) : (
+          <Route path="*" element={<Navigate to="/" replace />} />
+        )}
       </Routes>
+      {isLoggedIn && <Logout onLogout={handleLogout} />}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAuthenticate={handleAuthenticate}
+      />
     </Router>
   );
 };

@@ -33,7 +33,7 @@ const handleError = (error) => {
 
 export const loginUser = async (credentials) => {
   try {
-    const res = await api.post("/auth/login", credentials);
+    const res = await api.post("/auth/signin", credentials);
     return { success: true, data: res.data };
   } catch (error) {
     return handleError(error);
