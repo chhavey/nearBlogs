@@ -7,6 +7,7 @@ import Modal from "./components/Modal";
 import { Navigate } from "react-router-dom";
 import MyBlogs from "./pages/MyBlogs";
 import Create from "./pages/Create";
+import Payment from "./pages/Payment";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,6 +42,7 @@ const App = () => {
             <Route path="*" element={<Navigate to="/" replace />} />
             <Route path="/myBlogs" element={<MyBlogs />} />
             <Route path="/create" element={<Create />} />
+            <Route path="/payment" element={<Payment />} />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/" replace />} />

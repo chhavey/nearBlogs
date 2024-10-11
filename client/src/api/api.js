@@ -31,6 +31,7 @@ export const loginUser = async (credentials) => {
 
     if (res.data.token) {
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userName", res.data.fullName); // Store the user name
     }
 
     return { success: true, data: res.data };
@@ -45,6 +46,7 @@ export const signupUser = async (userData) => {
 
     if (res.data.token) {
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userName", res.data.fullName); // Store the user name
     }
 
     return { success: true, data: res.data };
