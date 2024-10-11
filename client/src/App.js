@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Logout from "./components/Logout";
 import Modal from "./components/Modal";
 import { Navigate } from "react-router-dom";
+import MyBlogs from "./pages/MyBlogs";
+import Create from "./pages/Create";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,7 +37,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home searchWord={searchWord} />} />
         {isLoggedIn ? (
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <>
+            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="/myBlogs" element={<MyBlogs />} />
+            <Route path="/create" element={<Create />} />
+          </>
         ) : (
           <Route path="*" element={<Navigate to="/" replace />} />
         )}

@@ -15,7 +15,7 @@ const Navbar = ({ isLoggedIn, onOpenModal, handleSearch }) => {
           <input
             type="text"
             placeholder="Enter a location"
-            className="px-3 py-1 rounded"
+            className="px-3 py-1 text-black rounded"
             onChange={(e) => handleSearch(e.target.value)}
           />
         )}

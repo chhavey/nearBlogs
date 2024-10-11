@@ -3,17 +3,24 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.signUp = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { fullName, username, email, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashedPassword });
+    const user = new User({
+      fullName,
+      username,
+      email,
+      password: hashedPassword,
+    });
     await user.save();
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
-    res.status(500).json({ error: "User registration failed" });
+    console.log(error.message);
+    res.status(500).json({ error: error.message });
   }
 };
 
+// SignIn
 exports.signIn = async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -24,7 +31,7 @@ exports.signIn = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.status(200).json({ token, userId: user._id });
+    res.status(200).json({ token, userId: user._id, fullName: user.fullName });
   } catch (error) {
     res.status(500).json({ error: "Sign-in failed" });
   }

@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { loginUser, signupUser } from '../api/api'; // Adjust the import path as necessary
-import { toast } from 'react-hot-toast'; // Import toast for error handling
+import { loginUser, signupUser } from '../api/api'; 
+import { toast } from 'react-hot-toast'; 
 
 const Modal = ({ isOpen, onClose, onAuthenticate }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const modalRef = useRef(null); // Ref for the modal
+  const modalRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,19 +18,16 @@ const Modal = ({ isOpen, onClose, onAuthenticate }) => {
       const response = isLogin ? await loginUser(userData) : await signupUser(userData);
 
       if (response.success) {
-        onAuthenticate(response.data); // Handle successful authentication
-        onClose(); // Close the modal
+        onAuthenticate(response.data); 
+        onClose(); 
       } else {
-        // Display error using toast
-        toast.error(response.message || 'An error occurred');
+        toast.error(response.message || 'An error occurred during login.');
       }
     } catch (error) {
-      // Display error using toast
-      toast.error('Error during authentication: ' + error.message);
+      toast.error('Error during authentication: ' + (error.response?.data?.message || error.message));
     }
   };
 
-  // Close modal when clicking outside of it
   const handleClickOutside = (event) => {
     if (modalRef.current && !modalRef.current.contains(event.target)) {
       onClose();

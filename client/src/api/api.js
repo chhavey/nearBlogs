@@ -1,29 +1,23 @@
-// src/api/api.js
 import axios from "axios";
 
-// Create an axios instance with a base URL
 const api = axios.create({
-  baseURL: "http://localhost:4000/api", // Backend base URL
+  baseURL: "http://localhost:4000/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Helper function to handle errors
 const handleError = (error) => {
   if (error.response) {
-    // Server-side error
     console.error("Error response:", error.response);
     return {
       success: false,
       message: error.response.data.message || "An error occurred.",
     };
   } else if (error.request) {
-    // No response received
     console.error("Error request:", error.request);
     return { success: false, message: "No response from the server." };
   } else {
-    // Something else
     console.error("Error message:", error.message);
     return { success: false, message: error.message };
   }
@@ -33,7 +27,12 @@ const handleError = (error) => {
 
 export const loginUser = async (credentials) => {
   try {
-    const res = await api.post("/auth/signin", credentials);
+    const res = await api.post(`/auth/signin`, credentials);
+
+    if (res.data.token) {
+      localStorage.setItem("token", res.data.token);
+    }
+
     return { success: true, data: res.data };
   } catch (error) {
     return handleError(error);
@@ -43,6 +42,11 @@ export const loginUser = async (credentials) => {
 export const signupUser = async (userData) => {
   try {
     const res = await api.post("/auth/signup", userData);
+
+    if (res.data.token) {
+      localStorage.setItem("token", res.data.token);
+    }
+
     return { success: true, data: res.data };
   } catch (error) {
     return handleError(error);
@@ -51,6 +55,7 @@ export const signupUser = async (userData) => {
 
 export const logoutUser = async () => {
   try {
+    localStorage.removeItem("token");
     const res = await api.post("/auth/logout");
     return { success: true, data: res.data };
   } catch (error) {
@@ -78,8 +83,22 @@ export const fetchBlogById = async (id) => {
   }
 };
 
-export const createBlog = async (blogData, token) => {
+// Fetch user blogs
+export const fetchBlogsByUser = async () => {
   try {
+    const token = localStorage.getItem("token");
+    const res = await api.get("/blogs/user", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return { success: true, data: res.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const createBlog = async (blogData) => {
+  try {
+    const token = localStorage.getItem("token");
     const res = await api.post("/blogs", blogData, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -89,8 +108,9 @@ export const createBlog = async (blogData, token) => {
   }
 };
 
-export const updateBlog = async (id, blogData, token) => {
+export const updateBlog = async (id, blogData) => {
   try {
+    const token = localStorage.getItem("token");
     const res = await api.put(`/blogs/${id}`, blogData, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -100,8 +120,9 @@ export const updateBlog = async (id, blogData, token) => {
   }
 };
 
-export const deleteBlog = async (id, token) => {
+export const deleteBlog = async (id) => {
   try {
+    const token = localStorage.getItem("token");
     const res = await api.delete(`/blogs/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -113,10 +134,11 @@ export const deleteBlog = async (id, token) => {
 
 // Payment API calls
 
-export const createPayment = async (amount, token) => {
+export const createPayment = async (amount) => {
   try {
+    const token = localStorage.getItem("token");
     const res = await api.post(
-      "/paypal/create-payment",
+      "/paypal/pay",
       { amount },
       {
         headers: { Authorization: `Bearer ${token}` },
@@ -128,11 +150,11 @@ export const createPayment = async (amount, token) => {
   }
 };
 
-export const executePayment = async (paymentId, payerId, token) => {
+export const executePayment = async (paymentId, payerId) => {
   try {
-    const res = await api.post(
-      "/paypal/execute-payment",
-      { paymentId, payerId },
+    const token = localStorage.getItem("token");
+    const res = await api.get(
+      `/paypal/success?paymentId=${paymentId}&PayerID=${payerId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
       }

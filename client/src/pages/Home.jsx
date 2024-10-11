@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Card from "../components/Card"; 
-import { fetchBlogsByLocation } from "../api/api"; // Ensure this is correctly set up
+import { fetchBlogsByLocation } from "../api/api";
 
 const Home = ({ searchWord }) => {
-  const [location, setLocation] = useState(""); // For displaying the location
-  const [blogs, setBlogs] = useState([]); // To store the blogs
+  const [location, setLocation] = useState(""); 
+  const [blogs, setBlogs] = useState([]); 
 
-  // Fetch user location and blogs based on location or search word
   useEffect(() => {
     const fetchLocationAndBlogs = async () => {
       try {
-        // Fetch user location
+        // Fetch user location api
         const res = await fetch("https://ipapi.co/json/");
         const data = await res.json();
         const userLocation = data.city; 
@@ -20,15 +19,15 @@ const Home = ({ searchWord }) => {
         const blogsData = await fetchBlogsByLocation(searchWord || userLocation);
         
         if (blogsData.success) {
-          console.log("Blogs fetched from API:", blogsData.data); // Debug log
+          console.log("Blogs fetched from API:", blogsData.data);
           setBlogs(blogsData.data);
         } else {
           console.error("Error fetching blogs", blogsData.message);
-          setBlogs([]); // Reset blogs to empty if error occurs
+          setBlogs([]); // Resetting blogs to empty if error occurs
         }
       } catch (err) {
         console.error("Error fetching location or blogs:", err);
-        setBlogs([]); // Ensure blogs is an empty array on error
+        setBlogs([]);
       }
     };
 
