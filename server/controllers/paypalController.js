@@ -16,10 +16,11 @@ exports.createPayment = (req, res) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: "http://localhost:4000/api/paypal/success", // After successful approval
-      cancel_url: "http://localhost:4000/api/paypal/cancel", // If payment is canceled
-      // return_url: https://your-domain.com/api/paypal/success
-      // cancel_url: https://your-domain.com/api/paypal/cancel
+      // LOCALHOST LINKS:
+      // return_url: "http://localhost:4000/api/paypal/success", // After successful approval
+      // cancel_url: "http://localhost:4000/api/paypal/cancel", // If payment is canceled
+      return_url: "https://nearblogs.onrender.com/api/paypal/success", //LIVE LINK
+      cancel_url: "https://nearblogs.onrender.com/api/paypal/cancel", //LIVE LINK
     },
     transactions: [
       {

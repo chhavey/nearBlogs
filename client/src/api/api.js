@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:4000/api",
+  // baseURL: "http://localhost:4000/api", //LOCALHOST LINK
+  baseURL: "https://nearblogs.onrender.com/api", //LIVE BACKEND LINK
   headers: {
     "Content-Type": "application/json",
   },
@@ -46,9 +47,8 @@ export const signupUser = async (userData) => {
 
     if (res.data.token) {
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("userName", res.data.fullName); // Store the user name
+      localStorage.setItem("userName", res.data.fullName);
     }
-
     return { success: true, data: res.data };
   } catch (error) {
     return handleError(error);
